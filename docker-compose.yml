@@ -1,0 +1,30 @@
+services:
+  challenge-api:
+    image: public.ecr.aws/i80/challenge-api
+    ports:
+      - "8080:5000"
+  redis:
+    image: redis:7.4.2
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo:6.0.21
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URL: mongodb://root:example@mongodb:27017
+      MONGO_DATABASE: 180-seguros
+      REDIS_URL: redis:6379
+      INSURANCE_PROVIDER_URL: http://challenge-api:5000/api
+      INSURANCE_PROVIDER_TOKEN: challenge-api-token

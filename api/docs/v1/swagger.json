@@ -1,0 +1,349 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API de calculo cotação de seguro",
+    "description": "API para teste de cotação de seguros",
+    "version": "1.0.0"
+  },
+  "basePath": "/v1",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/partners": {
+      "post": {
+        "summary": "Cria um novo parceiro",
+        "description": "Cria um novo parceiro para que seja possível fazer as cotações.",
+        "tags": [
+          "Parceiro"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePartnerRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Criação realizada com sucesso.",
+            "schema": {
+              "$ref": "#/definitions/CreatePartnerResponse"
+            }
+          },
+          "404": {
+            "description": "Erro no payload enviado"
+          },
+          "409": {
+            "description": "Já existe um parceiro cadastrado com o CNPJ informado"
+          }
+        }
+      }
+    },
+    "/partners/{partner_id}/quotes": {
+      "post": {
+        "summary": "Cria uma nova cotação",
+        "description": "Cria uma nova cotação baseada nos dados fornecidos para o parceiro identificado pelo ID.",
+        "tags": [
+          "Cotação"
+        ],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do parceiro para o qual a cotação será criada."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateQuoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cotação criada com sucesso.",
+            "schema": {
+              "$ref": "#/definitions/CreateQuoteResponse"
+            }
+          },
+          "404": {
+            "description": "Parceiro não encontrado ou erro no payload enviado."
+          }
+        }
+      }
+    },
+    "/partners/{partner_id}/policies": {
+      "post": {
+        "summary": "Cria uma nova apólice para um parceiro",
+        "description": "Cria uma nova apólice para um cotação feita anteriormente caso ainda não tenha sido expirada",
+        "tags": [
+          "Apólices"
+        ],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do parceiro para o qual a apólice será criada."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePolicyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Apólice criada com sucesso.",
+            "schema": {
+              "$ref": "#/definitions/CreatePolicyResponse"
+            }
+          },
+          "404": {
+            "description": "Parceiro não encontrado ou erro no payload enviado."
+          }
+        }
+      }
+    },
+    "/partners/{partner_id}/policies/{policy_id}": {
+      "get": {
+        "summary": "Obtém detalhes de uma apólice específica",
+        "description": "Retorna informações detalhadas sobre uma apólice específica associada a um parceiro.",
+        "tags": [
+          "Apólices"
+        ],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do parceiro ao qual a apólice está associada."
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID da apólice que será recuperada."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes da apólice retornados com sucesso.",
+            "schema": {
+              "$ref": "#/definitions/CreatePolicyResponse"
+            }
+          },
+          "404": {
+            "description": "Parceiro ou apólice não encontrado."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreatePartnerRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Victor Teste"
+        },
+        "cnpj": {
+          "type": "string",
+          "example": "70827391000106"
+        }
+      },
+      "required": [
+        "name",
+        "cnpj"
+      ]
+    },
+    "CreatePartnerResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "name": {
+          "type": "string",
+          "example": "Victor Teste"
+        },
+        "cnpj": {
+          "type": "string",
+          "example": "70827391000106"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2025-03-26T11:52:00Z"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "cnpj",
+        "created_at"
+      ]
+    },
+    "CreateQuoteRequest": {
+      "type": "object",
+      "properties": {
+        "age": {
+          "type": "integer",
+          "example": 26,
+          "description": "Idade do cliente para a cotação."
+        },
+        "sex": {
+          "type": "string",
+          "enum": [
+            "M",
+            "F"
+          ],
+          "example": "F",
+          "description": "Sexo do cliente ('M' para masculino, 'F' para feminino)."
+        }
+      },
+      "required": [
+        "age",
+        "sex"
+      ]
+    },
+    "CreateQuoteResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "123e4567-e89b-12d3-a456-426614174000",
+          "description": "ID único da cotação criada."
+        },
+        "age": {
+          "type": "integer",
+          "example": 26,
+          "description": "Idade do cliente usada na cotação."
+        },
+        "sex": {
+          "type": "string",
+          "enum": [
+            "M",
+            "F"
+          ],
+          "example": "F",
+          "description": "'M' para masculino, 'F' para feminino."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "example": 150.75,
+          "description": "Preço calculado para a cotação."
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2025-03-26T11:52:00Z",
+          "description": "Data de validade da minha da cotação, após expirada não é mais possivel utiliza-lá"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2025-03-26T11:52:00Z"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "cnpj",
+        "created_at"
+      ]
+    },
+    "CreatePolicyRequest": {
+      "type": "object",
+      "properties": {
+        "quotation_id": {
+          "type": "string",
+          "example": "67e4192fdc1438c8ab06e241",
+          "description": "Id da cotação feita anteriormente"
+        },
+        "name": {
+          "type": "string",
+          "example": "apolice de sinistro",
+          "description": "Nome para a apólice"
+        },
+        "sex": {
+          "type": "string",
+          "enum": [
+            "M",
+            "F"
+          ],
+          "example": "F",
+          "description": "Sexo do cliente ('M' para masculino, 'F' para feminino). Precisa ser o mesmo que foi utilizado na cotação"
+        },
+        "date_of_birth": {
+          "type": "string",
+          "example": "2025-03-26",
+          "description": "Precisa ser a mesma data utilizada no cotação"
+        }
+      },
+      "required": [
+        "quotation_id",
+        "name",
+        "sex",
+        "date_of_birth"
+      ]
+    },
+    "CreatePolicyResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "123e4567-e89b-12d3-a456-426614174000",
+          "description": "ID único da cotação criada."
+        },
+        "sex": {
+          "type": "string",
+          "enum": [
+            "M",
+            "F"
+          ],
+          "example": "F",
+          "description": "'M' para masculino, 'F' para feminino."
+        },
+        "name": {
+          "type": "string",
+          "example": "Victor Teste"
+        },
+        "quotation_id": {
+          "type": "string",
+          "example": "123e4567-e89b-12d3-a456-426614174000",
+          "description": "ID único da cotação criada."
+        },
+        "date_of_birth": {
+          "type": "string",
+          "example": "2025-03-26",
+          "description": "Data de nascimento inseridad na cotação anteriormente"
+        }
+      },
+      "required": [
+        "id",
+        "sex",
+        "name",
+        "quotation_id",
+        "date_of_birth"
+      ]
+    }
+  }
+}

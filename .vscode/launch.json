@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Go Application",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/main.go", // Caminho para o arquivo principal
+      "env": {
+        "MONGO_URL": "mongodb://root:example@localhost:27017",
+        "MONGO_DATABASE": "180-seguros",
+        "REDIS_URL": "localhost:6379",
+        "INSURANCE_PROVIDER_URL": "http://localhost:8080/api",
+        "INSURANCE_PROVIDER_TOKEN": "challenge-api-token"
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}", // Define o diretório de trabalho como a raiz do projeto
+      "console": "integratedTerminal"
+    }
+  ]
+}
